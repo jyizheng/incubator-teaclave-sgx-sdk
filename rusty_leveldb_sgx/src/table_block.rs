@@ -11,7 +11,7 @@ use crate::log::unmask_crc;
 use crate::options::{self, CompressionType, Options};
 use crate::table_builder;
 
-use crc::crc32;
+use crc::crc32::{self, Hasher32};
 use integer_encoding::FixedInt;
 use snap::Decoder;
 

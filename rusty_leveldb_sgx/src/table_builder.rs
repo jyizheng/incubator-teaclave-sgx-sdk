@@ -17,7 +17,7 @@ use std::io::Write;
 use std::rc::Rc;
 
 use crc::crc32;
-//use crc::Hasher32;
+use crc::Hasher32;
 use integer_encoding::FixedIntWriter;
 use snap::Encoder;
 

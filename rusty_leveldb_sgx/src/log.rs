@@ -10,7 +10,7 @@ use crate::error::{err, Result, StatusCode};
 use std::io::{Read, Write};
 
 use crc::crc32;
-//use crc::Hasher32;
+use crc::Hasher32;
 use integer_encoding::FixedInt;
 use integer_encoding::FixedIntWriter;
 
