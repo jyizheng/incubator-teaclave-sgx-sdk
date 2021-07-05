@@ -38,7 +38,7 @@ extern crate integer_encoding;
 extern crate rand;
 extern crate snap;
 
-mod block;
+pub mod block;
 mod block_builder;
 mod blockhandle;
 mod cache;

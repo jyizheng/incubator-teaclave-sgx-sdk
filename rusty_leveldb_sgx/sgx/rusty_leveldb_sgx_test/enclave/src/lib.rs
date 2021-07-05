@@ -45,9 +45,8 @@ use std::io::{self, Write};
 use std::slice;
 use sgx_tunittest::*;
 
-extern crate bytes;
-
-mod test_bytes;
+//extern crate bytes;
+//mod test_bytes;
 
 #[no_mangle]
 pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_status_t {
@@ -78,9 +77,8 @@ pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_
     println!("{}", &hello_string);
 
     rsgx_unit_tests!(
-test_bytes::test_original_capacity_to_repr,
-test_bytes::test_original_capacity_from_repr,
-);
+        rusty_leveldb::block::tests::get_data,
+    );
 
     sgx_status_t::SGX_SUCCESS
 }

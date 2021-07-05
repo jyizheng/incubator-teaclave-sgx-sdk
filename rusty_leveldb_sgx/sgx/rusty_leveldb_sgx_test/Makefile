@@ -156,11 +156,11 @@ $(Signed_RustEnclave_Name): $(RustEnclave_Name)
 	@$(SGX_ENCLAVE_SIGNER) sign -key enclave/Enclave_private.pem -enclave $(RustEnclave_Name) -out $@ -config enclave/Enclave.config.xml
 	@echo "SIGN =>  $@"
 
-.PHONY: enclave
+#.PHONY: enclave
 enclave:
-	(cd ../../src && git apply ../sgx/bytes-sgx-test/test.diff)
+	#(cd ../../src && git apply ../sgx/bytes-sgx-test/test.diff)
 	$(MAKE) -C ./enclave/
-	(cd ../../src && git checkout .)
+	#(cd ../../src && git checkout .)
 
 .PHONY: compiler-rt
 compiler-rt:
