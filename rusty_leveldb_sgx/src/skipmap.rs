@@ -358,32 +358,12 @@ impl LdbIterator for SkipMapIter {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::cmp::MemtableKeyCmp;
     use crate::options;
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
     use crate::types::current_key_val;
-
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        should_panic!(test_no_dupes());
-        run_tests!(
-            test_insert,
-            test_contains,
-            test_find,
-            test_empty_skipmap_find_memtable_cmp,
-            test_skipmap_iterator_0,
-            test_skipmap_iterator_init,
-            test_skipmap_iterator,
-            test_skipmap_iterator_seek_valid,
-            test_skipmap_behavior,
-            test_skipmap_iterator_prev,
-            test_skipmap_iterator_concurrent_insert,
-        )
-    }
 
     pub fn make_skipmap() -> SkipMap {
         let mut skm = SkipMap::new(options::for_test().cmp);

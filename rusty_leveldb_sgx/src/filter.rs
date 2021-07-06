@@ -231,19 +231,9 @@ fn offset_data_iterate<F: FnMut(&[u8])>(data: &[u8], offsets: &[usize], mut f: F
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::key_types::LookupKey;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_filter_bloom,
-            test_filter_internal_keys_identical,
-            test_filter_bloom_hash,
-        )
-    }
 
     const _BITS_PER_KEY: u32 = 12;
 

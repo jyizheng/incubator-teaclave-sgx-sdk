@@ -240,23 +240,9 @@ impl<T> Cache<T> {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::LRUList;
     use super::*;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_blockcache_cache_add_rm,
-            test_blockcache_cache_capacity,
-            test_blockcache_lru_remove,
-            test_blockcache_lru_1,
-            test_blockcache_lru_reinsert,
-            test_blockcache_lru_reinsert_2,
-            test_blockcache_lru_edge_cases,
-        )
-    }
 
     fn make_key(a: u8, b: u8, c: u8) -> CacheKey {
         [a, b, c, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

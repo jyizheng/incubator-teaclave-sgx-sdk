@@ -188,17 +188,11 @@ impl Env for PosixDiskEnv {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use std::convert::AsRef;
     use std::io::Write;
     use std::iter::FromIterator;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(test_files, test_locking, test_dirs,)
-    }
 
     fn test_files() {
         let n = "testfile.xyz".to_string();

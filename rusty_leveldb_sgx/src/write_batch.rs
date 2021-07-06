@@ -144,15 +144,9 @@ impl<'a> Iterator for WriteBatchIter<'a> {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use std::iter::Iterator;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(test_write_batch,)
-    }
 
     fn test_write_batch() {
         let mut b = WriteBatch::new();

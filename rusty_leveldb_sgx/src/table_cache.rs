@@ -88,7 +88,6 @@ impl TableCache {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::cache;
@@ -96,12 +95,6 @@ pub mod tests {
     use crate::options;
     use crate::table_builder::TableBuilder;
     use crate::test_util::LdbIteratorIter;
-
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(test_table_file_name, test_filenum_to_key, test_table_cache,)
-    }
 
     fn test_table_file_name() {
         assert_eq!(Path::new("abc/000122.ldb"), table_file_name("abc", 122));

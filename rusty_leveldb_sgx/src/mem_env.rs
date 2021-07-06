@@ -348,25 +348,9 @@ impl Env for MemEnv {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::env;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_mem_fs_memfile_read,
-            test_mem_fs_memfile_write,
-            test_mem_fs_memfile_readat,
-            test_mem_fs_open_read_write,
-            test_mem_fs_open_read_write_append_truncate,
-            test_mem_fs_metadata_operations,
-            test_mem_fs_children,
-            test_mem_fs_lock,
-            test_memenv_all,
-        )
-    }
 
     fn new_memfile(v: Vec<u8>) -> MemFile {
         MemFile(Arc::new(Mutex::new(v)))

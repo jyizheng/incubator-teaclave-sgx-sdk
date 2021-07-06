@@ -122,16 +122,9 @@ impl BlockBuilder {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::options;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        should_panic!(test_block_builder_panics());
-        run_tests!(test_block_builder_sanity, test_block_builder_reset,)
-    }
 
     fn get_data() -> Vec<(&'static [u8], &'static [u8])> {
         vec![

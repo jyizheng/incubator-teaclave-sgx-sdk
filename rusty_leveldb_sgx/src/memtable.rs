@@ -153,29 +153,12 @@ fn shift_left(s: &mut Vec<u8>, mid: usize) {
     s.truncate(newlen);
 }
 
-#[cfg(feature = "enclave_unit_test")]
 #[allow(unused_variables)]
 pub mod tests {
     use super::*;
     use crate::key_types::*;
     use crate::options;
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_shift_left,
-            test_memtable_parse_tag,
-            test_memtable_add,
-            test_memtable_add_get,
-            test_memtable_iterator_init,
-            test_memtable_iterator_seek,
-            test_memtable_iterator_fwd,
-            test_memtable_iterator_reverse,
-            test_memtable_parse_key,
-            test_memtable_iterator_behavior,
-        )
-    }
 
     fn test_shift_left() {
         let mut v = vec![1, 2, 3, 4, 5];

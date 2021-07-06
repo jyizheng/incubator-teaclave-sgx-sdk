@@ -977,7 +977,6 @@ fn get_range<'a, C: Cmp, I: Iterator<Item = &'a FileMetaHandle>>(
     (smallest.unwrap(), largest.unwrap())
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::cmp::DefaultCmp;
@@ -985,20 +984,6 @@ pub mod tests {
     use crate::test_util::LdbIteratorIter;
     use crate::types::FileMetaData;
     use crate::version::testutil::make_version;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_version_set_merge_iters,
-            test_version_set_total_size,
-            test_version_set_get_range,
-            test_version_set_builder,
-            test_version_set_log_and_apply,
-            test_version_set_utils,
-            test_version_set_pick_compaction,
-            test_version_set_compaction,
-        )
-    }
 
     fn example_files() -> Vec<FileMetaHandle> {
         let mut f1 = FileMetaData::default();

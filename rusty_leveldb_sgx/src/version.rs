@@ -573,7 +573,6 @@ fn some_file_overlaps_range<'a, 'b>(
     false
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod testutil {
     use super::*;
     use crate::cmp::DefaultCmp;
@@ -720,7 +719,6 @@ pub mod testutil {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::testutil::*;
     use super::*;
@@ -730,23 +728,6 @@ pub mod tests {
     use crate::merging_iter::MergingIter;
     use crate::options;
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_version_max_next_level_overlapping,
-            test_version_all_iters,
-            test_version_summary,
-            test_version_get_simple,
-            test_version_get_overlapping_basic,
-            test_version_overlap_in_level,
-            test_version_pick_memtable_output_level,
-            test_version_overlapping_inputs,
-            test_version_record_read_sample,
-            test_version_key_ordering,
-            test_version_file_overlaps,
-        )
-    }
 
     fn test_version_concat_iter() {
         let v = make_version().0;

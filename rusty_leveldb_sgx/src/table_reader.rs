@@ -353,7 +353,6 @@ impl LdbIterator for TableIterator {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use crate::filter::BloomPolicy;
     use crate::key_types::LookupKey;
@@ -363,23 +362,6 @@ pub mod tests {
     use crate::types::{current_key_val, LdbIterator};
 
     use super::*;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_table_approximate_offset,
-            test_table_block_cache_use,
-            test_table_iterator_fwd_bwd,
-            test_table_iterator_filter,
-            test_table_iterator_state_behavior,
-            test_table_iterator_behavior_standard,
-            test_table_iterator_values,
-            test_table_iterator_seek,
-            test_table_get,
-            test_table_internal_keys,
-            test_table_reader_checksum,
-        )
-    }
 
     fn build_data() -> Vec<(&'static str, &'static str)> {
         vec![

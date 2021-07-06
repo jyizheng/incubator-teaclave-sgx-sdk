@@ -181,22 +181,10 @@ impl Cmp for MemtableKeyCmp {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use crate::key_types::LookupKey;
     use crate::types;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        should_panic!(test_cmp_memtablekeycmp_panics());
-        run_tests!(
-            test_cmp_defaultcmp_shortest_sep,
-            test_cmp_defaultcmp_short_succ,
-            test_cmp_internalkeycmp_shortest_sep,
-            test_cmp_internalkeycmp,
-        )
-    }
 
     fn test_cmp_defaultcmp_shortest_sep() {
         assert_eq!(

@@ -133,14 +133,8 @@ pub fn test_iterator_properties<It: LdbIterator>(mut it: It) {
     assert!(!it.valid());
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(test_test_util_basic, test_test_util_ldbiter_properties,)
-    }
 
     fn test_test_util_basic() {
         let v = vec![

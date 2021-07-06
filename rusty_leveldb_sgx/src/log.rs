@@ -215,21 +215,9 @@ pub fn unmask_crc(mc: u32) -> u32 {
     rot.wrapping_shr(17) | rot.wrapping_shl(15)
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::*;
     use std::io::Cursor;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_crc_mask_crc,
-            test_crc_sanity,
-            test_writer,
-            test_writer_append,
-            test_reader,
-        )
-    }
 
     fn test_crc_mask_crc() {
         let crc = crc32::checksum_castagnoli("abcde".as_bytes());

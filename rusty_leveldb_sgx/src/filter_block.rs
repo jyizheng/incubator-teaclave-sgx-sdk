@@ -164,21 +164,11 @@ impl FilterBlockReader {
     }
 }
 
-#[cfg(feature = "enclave_unit_test")]
 pub mod tests {
     use super::get_filter_index;
     use super::FILTER_BASE_LOG2;
     use super::*;
     use crate::filter::BloomPolicy;
-    use teaclave_test_utils::*;
-
-    pub fn run_tests() -> bool {
-        run_tests!(
-            test_filter_index,
-            test_filter_block_builder,
-            test_filter_block_build_read,
-        )
-    }
 
     fn test_filter_index() {
         assert_eq!(get_filter_index(3777, FILTER_BASE_LOG2), 1);
