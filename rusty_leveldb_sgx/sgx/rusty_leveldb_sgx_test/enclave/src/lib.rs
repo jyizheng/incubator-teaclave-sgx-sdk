@@ -45,9 +45,6 @@ use std::io::{self, Write};
 use std::slice;
 use sgx_tunittest::*;
 
-//extern crate bytes;
-//mod test_bytes;
-
 #[no_mangle]
 pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_status_t {
 

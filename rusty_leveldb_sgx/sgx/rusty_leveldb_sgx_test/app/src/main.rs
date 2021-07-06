@@ -65,7 +65,7 @@ fn init_enclave() -> SgxResult<SgxEnclave> {
         }
     };
 
-    let token_file: path::PathBuf = home_dir.join(ENCLAVE_TOKEN);;
+    let token_file: path::PathBuf = home_dir.join(ENCLAVE_TOKEN);
     if use_token == true {
         match fs::File::open(&token_file) {
             Err(_) => {
