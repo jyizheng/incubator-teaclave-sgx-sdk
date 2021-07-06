@@ -136,6 +136,11 @@ pub fn test_iterator_properties<It: LdbIterator>(mut it: It) {
 pub mod tests {
     use super::*;
 
+    pub fn run_tests() {
+        test_test_util_basic();
+        test_test_util_ldbiter_properties();
+    }
+
     fn test_test_util_basic() {
         let v = vec![
             ("abc".as_bytes(), "def".as_bytes()),

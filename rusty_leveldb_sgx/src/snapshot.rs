@@ -119,6 +119,10 @@ pub mod tests {
     use super::*;
     use std::prelude::v1::*;
 
+    pub fn run_tests() {
+        test_snapshot_list();
+    }
+
     #[allow(unused_variables)]
     fn test_snapshot_list() {
         let mut l = SnapshotList::new();

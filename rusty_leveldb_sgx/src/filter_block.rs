@@ -170,6 +170,12 @@ pub mod tests {
     use super::*;
     use crate::filter::BloomPolicy;
 
+    pub fn run_tests() {
+        test_filter_index();
+        test_filter_block_builder();
+        test_filter_block_build_read();
+    }
+
     fn test_filter_index() {
         assert_eq!(get_filter_index(3777, FILTER_BASE_LOG2), 1);
         assert_eq!(get_filter_index(10000, FILTER_BASE_LOG2), 4);

@@ -205,6 +205,16 @@ pub mod tests {
     use crate::test_util::{test_iterator_properties, LdbIteratorIter, TestLdbIter};
     use crate::types::{current_key_val, LdbIterator};
 
+    pub fn run_tests() {
+        test_merging_one();
+        test_merging_two();
+        test_merging_zero();
+        test_merging_behavior();
+        test_merging_forward_backward();
+        test_merging_real();
+        test_merging_seek_reset();
+    }
+
     fn test_merging_one() {
         let skm = tests::make_skipmap();
         let iter = skm.iter();

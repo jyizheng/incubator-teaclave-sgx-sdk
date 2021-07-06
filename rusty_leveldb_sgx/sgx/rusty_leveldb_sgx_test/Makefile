@@ -81,6 +81,17 @@ App_Rust_Flags := --release
 App_SRC_Files := $(shell find app/ -type f -name '*.rs') $(shell find app/ -type f -name 'Cargo.toml')
 App_Include_Paths := -I ./app -I./include -I$(SGX_SDK)/include -I$(CUSTOM_EDL_PATH)
 App_C_Flags := $(SGX_COMMON_CFLAGS) -fPIC -Wno-attributes $(App_Include_Paths)
+App_Link_Flags := -L$(SGX_LIBRARY_PATH) -L$(CUSTOM_LIBRARY_PATH) -l$(Urts_Library_Name) -lpthread
+ifneq ($(SGX_MODE), HW)
+	App_Link_Flags += -lsgx_uae_service_sim
+else
+	App_Link_Flags += -lsgx_uae_service
+endif
+
+App_Link_Flags += -lsgx_uprotected_fs
+App_Link_Flags += -lsgx_ustdc
+
+
 
 App_Rust_Path := ./app/target/release
 App_Enclave_u_Object :=app/libEnclave_u.a
@@ -103,7 +114,7 @@ RustEnclave_C_Files := $(wildcard ./enclave/*.c)
 RustEnclave_C_Objects := $(RustEnclave_C_Files:.c=.o)
 RustEnclave_Include_Paths := -I$(CUSTOM_COMMON_PATH)/inc -I$(CUSTOM_EDL_PATH) -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport -I$(SGX_SDK)/include/epid -I ./enclave -I./include
 
-RustEnclave_Link_Libs := -L$(CUSTOM_LIBRARY_PATH) -lenclave
+RustEnclave_Link_Libs := -L$(CUSTOM_LIBRARY_PATH) -lenclave -lsgx_uprotected_fs -lsgx_ustdc
 RustEnclave_Compile_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(RustEnclave_Include_Paths)
 RustEnclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
 	-Wl,--whole-archive -l$(Trts_Library_Name) -l$(Service_Library_Name) -Wl,--no-whole-archive \
@@ -130,7 +141,7 @@ $(Enclave_EDL_Files): $(SGX_EDGER8R) enclave/Enclave.edl
 ######## App Objects ########
 
 app/Enclave_u.o: $(Enclave_EDL_Files)
-	@$(CC) $(App_C_Flags) -c app/Enclave_u.c -o $@
+	@$(CC) $(App_C_Flags) -c app/Enclave_u.c -o $@ 
 	@echo "CC   <=  $<"
 
 $(App_Enclave_u_Object): app/Enclave_u.o

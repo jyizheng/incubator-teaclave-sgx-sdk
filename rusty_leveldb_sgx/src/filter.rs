@@ -237,6 +237,12 @@ pub mod tests {
 
     const _BITS_PER_KEY: u32 = 12;
 
+    pub fn run_tests() {
+        test_filter_bloom();
+        test_filter_internal_keys_identical();
+        test_filter_bloom_hash();
+    }
+
     fn input_data() -> (Vec<u8>, Vec<usize>) {
         let mut concat = vec![];
         let mut offs = vec![];

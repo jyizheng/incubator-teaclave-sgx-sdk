@@ -140,6 +140,12 @@ pub mod tests {
         ]
     }
 
+    pub fn run_tests() {
+        should_panic!(test_block_builder_panics());
+        test_block_builder_sanity();
+        test_block_builder_reset();
+    }
+
     fn test_block_builder_sanity() {
         let mut o = options::for_test();
         o.block_restart_interval = 3;

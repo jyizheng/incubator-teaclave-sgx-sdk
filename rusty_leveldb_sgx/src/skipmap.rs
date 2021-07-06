@@ -365,6 +365,22 @@ pub mod tests {
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
     use crate::types::current_key_val;
 
+
+    pub fn run_tests() {
+        should_panic!(test_no_dupes());
+        test_insert();
+        test_contains();
+        test_find();
+        test_empty_skipmap_find_memtable_cmp();
+        test_skipmap_iterator_0();
+        test_skipmap_iterator_init();
+        test_skipmap_iterator();
+        test_skipmap_iterator_seek_valid();
+        test_skipmap_behavior();
+        test_skipmap_iterator_prev();
+        test_skipmap_iterator_concurrent_insert();
+    }
+
     pub fn make_skipmap() -> SkipMap {
         let mut skm = SkipMap::new(options::for_test().cmp);
         let keys = vec![
@@ -384,7 +400,7 @@ pub mod tests {
         assert_eq!(skm.len(), 26);
         skm.map.borrow().dbg_print();
     }
-
+    
     fn test_no_dupes() {
         let mut skm = make_skipmap();
         // this should panic

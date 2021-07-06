@@ -74,7 +74,32 @@ pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_
     println!("{}", &hello_string);
 
     rsgx_unit_tests!(
-        rusty_leveldb::block::tests::get_data,
+        rusty_leveldb::block::tests::run_tests,
+        rusty_leveldb::block_builder::tests::run_tests,
+        rusty_leveldb::blockhandle::tests::run_tests,
+        rusty_leveldb::cache::tests::run_tests,
+        rusty_leveldb::cmp::tests::run_tests,
+        rusty_leveldb::db_impl::tests::run_tests,
+        rusty_leveldb::db_iter::tests::run_tests,
+        rusty_leveldb::disk_env::tests::run_tests,
+        rusty_leveldb::filter::tests::run_tests,
+        rusty_leveldb::filter_block::tests::run_tests,
+        rusty_leveldb::key_types::tests::run_tests,
+        rusty_leveldb::log::tests::run_tests,
+        rusty_leveldb::mem_env::tests::run_tests,
+        rusty_leveldb::memtable::tests::run_tests,
+        rusty_leveldb::merging_iter::tests::run_tests,
+        rusty_leveldb::skipmap::tests::run_tests,
+        rusty_leveldb::snapshot::tests::run_tests,
+        rusty_leveldb::table_builder::tests::run_tests,
+        rusty_leveldb::table_cache::tests::run_tests,
+        rusty_leveldb::test_util::tests::run_tests,
+        rusty_leveldb::table_reader::tests::run_tests,
+        rusty_leveldb::types::tests::run_tests,
+        rusty_leveldb::version::tests::run_tests,
+        rusty_leveldb::version_edit::tests::run_tests,
+        rusty_leveldb::version_set::tests::run_tests,
+        rusty_leveldb::write_batch::tests::run_tests,
     );
 
     sgx_status_t::SGX_SUCCESS

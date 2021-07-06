@@ -186,6 +186,13 @@ pub mod tests {
     use crate::key_types::LookupKey;
     use crate::types;
 
+    pub fn run_tests() {
+        test_cmp_defaultcmp_shortest_sep();
+        test_cmp_defaultcmp_short_succ();
+        test_cmp_internalkeycmp_shortest_sep();
+        test_cmp_internalkeycmp();
+    }
+
     fn test_cmp_defaultcmp_shortest_sep() {
         assert_eq!(
             DefaultCmp.find_shortest_sep("abcd".as_bytes(), "abcf".as_bytes()),

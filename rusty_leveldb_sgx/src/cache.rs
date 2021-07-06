@@ -248,6 +248,16 @@ pub mod tests {
         [a, b, c, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
 
+    pub fn run_tests() {
+        test_blockcache_cache_add_rm();
+        test_blockcache_cache_capacity();
+        test_blockcache_lru_remove();
+        test_blockcache_lru_1();
+        test_blockcache_lru_reinsert();
+        test_blockcache_lru_reinsert_2();
+        test_blockcache_lru_edge_cases();
+    }
+
     fn test_blockcache_cache_add_rm() {
         let mut cache = Cache::new(128);
 

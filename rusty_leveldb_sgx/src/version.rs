@@ -729,6 +729,20 @@ pub mod tests {
     use crate::options;
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
 
+    pub fn run_tests() {
+        test_version_max_next_level_overlapping();
+        test_version_all_iters();
+        test_version_summary();
+        test_version_get_simple();
+        test_version_get_overlapping_basic();
+        test_version_overlap_in_level();
+        test_version_pick_memtable_output_level();
+        test_version_overlapping_inputs();
+        test_version_record_read_sample();
+        test_version_key_ordering();
+        test_version_file_overlaps();
+    }
+
     fn test_version_concat_iter() {
         let v = make_version().0;
 

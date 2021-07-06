@@ -96,6 +96,12 @@ pub mod tests {
     use crate::table_builder::TableBuilder;
     use crate::test_util::LdbIteratorIter;
 
+    pub fn run_tests() {
+        test_table_file_name();
+        test_filenum_to_key();
+        test_table_cache();
+    }
+
     fn test_table_file_name() {
         assert_eq!(Path::new("abc/000122.ldb"), table_file_name("abc", 122));
         assert_eq!(

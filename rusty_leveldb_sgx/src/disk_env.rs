@@ -194,6 +194,11 @@ pub mod tests {
     use std::io::Write;
     use std::iter::FromIterator;
 
+    pub fn run_tests() {
+        test_files();
+        test_locking();
+        test_dirs();
+    }
     fn test_files() {
         let n = "testfile.xyz".to_string();
         let name = n.as_ref();

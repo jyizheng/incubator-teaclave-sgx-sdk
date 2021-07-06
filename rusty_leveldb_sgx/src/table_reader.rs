@@ -363,6 +363,20 @@ pub mod tests {
 
     use super::*;
 
+    pub fn run_tests() {
+        test_table_approximate_offset();
+        test_table_block_cache_use();
+        test_table_iterator_fwd_bwd();
+        test_table_iterator_filter();
+        test_table_iterator_state_behavior();
+        test_table_iterator_behavior_standard();
+        test_table_iterator_values();
+        test_table_iterator_seek();
+        test_table_get();
+        test_table_internal_keys();
+        test_table_reader_checksum();
+    }
+
     fn build_data() -> Vec<(&'static str, &'static str)> {
         vec![
             // block 1

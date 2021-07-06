@@ -278,6 +278,12 @@ pub mod tests {
     use crate::blockhandle::BlockHandle;
     use crate::options;
 
+    pub fn run_tests() {
+        should_panic!(test_bad_input());
+        test_footer();
+        test_table_builder();
+    }
+
     fn test_footer() {
         let f = Footer::new(BlockHandle::new(44, 4), BlockHandle::new(55, 5));
         let mut buf = [0; 48];
@@ -324,7 +330,7 @@ pub mod tests {
         let actual = b.finish().unwrap();
         assert_eq!(223, actual);
     }
-
+    
     fn test_bad_input() {
         let mut d = Vec::with_capacity(512);
         let mut opt = options::for_test();

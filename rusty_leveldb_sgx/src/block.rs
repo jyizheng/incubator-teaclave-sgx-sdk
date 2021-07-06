@@ -309,7 +309,7 @@ pub mod tests {
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
     use crate::types::{current_key_val, LdbIterator};
 
-    pub fn get_data() -> Vec<(&'static [u8], &'static [u8])> {
+    fn get_data() -> Vec<(&'static [u8], &'static [u8])> {
         vec![
             ("key1".as_bytes(), "value1".as_bytes()),
             (
@@ -321,6 +321,15 @@ pub mod tests {
             ("prefix_key2".as_bytes(), "value".as_bytes()),
             ("prefix_key3".as_bytes(), "value".as_bytes()),
         ]
+    }
+
+    pub fn run_tests() {
+        test_block_iterator_properties();
+        test_block_empty();
+        test_block_build_iterate();
+        test_block_iterate_reverse();
+        test_block_seek();
+        test_block_seek_to_last();
     }
 
     fn test_block_iterator_properties() {

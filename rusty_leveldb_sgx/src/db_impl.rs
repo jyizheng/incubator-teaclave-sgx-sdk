@@ -1140,6 +1140,25 @@ pub mod tests {
     use crate::test_util::LdbIteratorIter;
     use crate::version::testutil::make_version;
 
+    pub fn run_tests() {
+        test_db_impl_open_info_log();
+        test_db_impl_init();
+        test_db_impl_compact_range();
+        test_db_impl_compact_range_memtable();
+        test_db_impl_locking();
+        test_db_impl_build_table();
+        test_db_impl_build_db_sanity();
+        test_db_impl_get_from_table_with_snapshot();
+        test_db_impl_delete();
+        test_db_impl_compact_single_file();
+        test_db_impl_compaction_trivial_move();
+        test_db_impl_memtable_compaction();
+        test_db_impl_compaction();
+        test_db_impl_compaction_trivial();
+        test_db_impl_compaction_state_cleanup();
+        test_db_impl_open_close_reopen();
+    }
+
     fn test_db_impl_open_info_log() {
         let e = MemEnv::new();
         {

@@ -305,6 +305,10 @@ pub mod tests {
     use crate::cmp::{Cmp, DefaultCmp};
     use crate::types::FileMetaData;
 
+    pub fn run_tests() {
+        test_version_edit_encode_decode();
+    }
+
     fn test_version_edit_encode_decode() {
         let mut ve = VersionEdit::new();
 

@@ -50,6 +50,10 @@ impl BlockHandle {
 pub mod tests {
     use super::*;
 
+    pub fn run_tests() {
+        test_blockhandle();
+    }
+
     fn test_blockhandle() {
         let bh = BlockHandle::new(890, 777);
         let mut dst = [0 as u8; 128];

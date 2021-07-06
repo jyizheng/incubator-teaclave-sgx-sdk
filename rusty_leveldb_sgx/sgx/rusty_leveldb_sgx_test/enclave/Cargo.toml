@@ -14,6 +14,7 @@ enclave_unit_test = ["teaclave_test_utils/mesalock_sgx"]
 [dependencies]
 rusty-leveldb = { path = "../../.." }
 teaclave_test_utils = { path = "../../../../tests/utils", optional = true }
+protected_fs_rs = { path = "../../../../protected_fs_rs", optional = true }
 
 [target.'cfg(not(target_env = "sgx"))'.dependencies]
 sgx_types = { rev = "v1.1.3", git = "https://github.com/apache/teaclave-sgx-sdk.git" }
@@ -28,3 +29,6 @@ sgx_tstd = { path = "../../../../sgx_tstd" }
 sgx_tunittest = { path = "../../../../sgx_tunittest" }
 sgx_alloc = { path = "../../../../sgx_alloc" }
 sgx_trts = { path = "../../../../sgx_trts" }
+
+
+

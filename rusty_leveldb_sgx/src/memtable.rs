@@ -160,6 +160,19 @@ pub mod tests {
     use crate::options;
     use crate::test_util::{test_iterator_properties, LdbIteratorIter};
 
+    pub fn run_tests() {
+        test_shift_left();
+        test_memtable_parse_tag();
+        test_memtable_add();
+        test_memtable_add_get();
+        test_memtable_iterator_init();
+        test_memtable_iterator_seek();
+        test_memtable_iterator_fwd();
+        test_memtable_iterator_reverse();
+        test_memtable_parse_key();
+        test_memtable_iterator_behavior();
+    }
+
     fn test_shift_left() {
         let mut v = vec![1, 2, 3, 4, 5];
         shift_left(&mut v, 1);

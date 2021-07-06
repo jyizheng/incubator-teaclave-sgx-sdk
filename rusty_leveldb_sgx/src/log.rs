@@ -219,6 +219,14 @@ pub mod tests {
     use super::*;
     use std::io::Cursor;
 
+    pub fn run_tests() {
+        test_crc_mask_crc();
+        test_crc_sanity();
+        test_writer();
+        test_writer_append();
+        test_reader();
+    }
+
     fn test_crc_mask_crc() {
         let crc = crc32::checksum_castagnoli("abcde".as_bytes());
         assert_eq!(crc, unmask_crc(mask_crc(crc)));

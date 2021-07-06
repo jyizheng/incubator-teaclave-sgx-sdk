@@ -298,6 +298,16 @@ pub mod tests {
     use std::collections::HashSet;
     use std::iter::FromIterator;
 
+    pub fn run_tests() {
+        db_iter_basic_test();
+        db_iter_reset();
+        db_iter_test_fwd_backwd();
+        db_iter_test_seek();
+        db_iter_deleted_entry_not_returned();
+        db_iter_deleted_entry_not_returned_memtable();
+        db_iter_repeated_open_close();
+    }
+
     fn db_iter_basic_test() {
         let mut db = build_db().0;
         let mut iter = db.new_iter().unwrap();

@@ -148,6 +148,10 @@ pub mod tests {
     use super::*;
     use std::iter::Iterator;
 
+    pub fn run_tests() {
+        test_write_batch();
+    }    
+
     fn test_write_batch() {
         let mut b = WriteBatch::new();
         let entries = vec![

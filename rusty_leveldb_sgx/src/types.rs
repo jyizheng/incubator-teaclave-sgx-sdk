@@ -188,6 +188,10 @@ pub fn parse_file_name<P: AsRef<Path>>(ff: P) -> Result<(FileNum, FileType)> {
 pub mod tests {
     use super::*;
 
+    pub fn run_tests() {
+        test_types_parse_file_name();
+    }
+
     fn test_types_parse_file_name() {
         for c in &[
             ("CURRENT", (0, FileType::Current)),
