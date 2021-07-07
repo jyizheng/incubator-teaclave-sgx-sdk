@@ -34,6 +34,9 @@ enclave {
     from "sgx_stdio.edl" import *;
     from "sgx_backtrace.edl" import *;
     from "sgx_tstdc.edl" import *;
+    from "sgx_tprotected_fs.edl" import *;
+
+
     trusted {
         /* define ECALLs here. */
 
