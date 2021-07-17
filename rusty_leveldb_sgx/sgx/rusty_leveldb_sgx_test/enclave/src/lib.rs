@@ -41,9 +41,78 @@ extern crate sgx_tunittest;
 use sgx_types::*;
 use std::string::String;
 use std::vec::Vec;
-use std::io::{self, Write};
+use std::io::{self, Write, ErrorKind};
 use std::slice;
 use sgx_tunittest::*;
+
+extern crate rand;
+extern crate rusty_leveldb;
+use rand::distributions::Alphanumeric;
+use rand::Rng;
+use std::iter;
+
+use rusty_leveldb::CompressionType;
+use rusty_leveldb::Options;
+use rusty_leveldb::DB;
+
+use std::untrusted::fs;
+use std::error::Error;
+use std::boxed::Box;
+
+const KEY_LEN: usize = 16;
+const VAL_LEN: usize = 48;
+
+fn gen_string(len: usize) -> String {
+    let mut rng = rand::thread_rng();
+    iter::repeat(())
+        .map(|()| rng.sample(Alphanumeric))
+        .take(len)
+        .collect()
+}
+
+fn fill_db(db: &mut DB, entries: usize) -> Result<(), Box<dyn Error>> {
+    for i in 0..entries {
+        let (k, v) = (gen_string(KEY_LEN), gen_string(VAL_LEN));
+        db.put(k.as_bytes(), v.as_bytes())?;
+        if i % 1000 == 0 {
+            db.flush()?;
+
+            let v2 = db
+                .get(k.as_bytes())
+                .ok_or_else(|| Box::new(io::Error::new(ErrorKind::NotFound, "Key not found")))?;
+            assert_eq!(&v.as_bytes()[..], &v2[..]);
+
+            db.delete(k.as_bytes())?;
+            assert_eq!(true, db.get(k.as_bytes()).is_none());
+        }
+
+        if i % 100 == 0 {
+            db.flush()?;
+        }
+    }
+    Ok(())
+}
+
+fn bench() {
+    let key = [
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+        0x08,
+    ];
+    let mut opt = Options::new_disk_db_with(key);
+    opt.compression_type = CompressionType::CompressionSnappy;
+
+    println!("{}", "before db open");
+    let mut db = DB::open("/tmp/leveldb_testdb", opt).unwrap();
+
+    println!("{}", "db open is done");
+    fill_db(&mut db, 100).unwrap();
+
+    drop(db);
+
+    println!("{}", "before db remove");
+    fs::remove_dir_all("/tmp/leveldb_testdb").expect("Cannot remove directory");
+    println!("{}", "db remove is done");
+}
 
 #[no_mangle]
 pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_status_t {
@@ -73,6 +142,12 @@ pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_
     // Ocall to normal world for output
     println!("{}", &hello_string);
 
+    bench();
+
+    sgx_status_t::SGX_SUCCESS
+}
+
+fn unit_test() { 
     rsgx_unit_tests!(
         rusty_leveldb::block::tests::run_tests,
         rusty_leveldb::block_builder::tests::run_tests,
@@ -101,6 +176,4 @@ pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_
         rusty_leveldb::version_set::tests::run_tests,
         rusty_leveldb::write_batch::tests::run_tests,
     );
-
-    sgx_status_t::SGX_SUCCESS
 }
