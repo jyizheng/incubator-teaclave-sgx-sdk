@@ -39,7 +39,6 @@ enclave {
 
     trusted {
         /* define ECALLs here. */
-
-        public sgx_status_t say_something([in, size=len] const uint8_t* some_string, size_t len);
+        public sgx_status_t bench_kv([in, size=len1] const uint8_t* data_size, size_t len1, [in, size=len2] const uint8_t* bench_name, size_t len2);
     };
 };

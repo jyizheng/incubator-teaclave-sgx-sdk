@@ -35,13 +35,15 @@ use sgx_urts::SgxEnclave;
 use std::io::{Read, Write};
 use std::fs;
 use std::path;
+use std::env;
 
 static ENCLAVE_FILE: &'static str = "enclave.signed.so";
 static ENCLAVE_TOKEN: &'static str = "enclave.token";
 
 extern {
-    fn say_something(eid: sgx_enclave_id_t, retval: *mut sgx_status_t,
-                     some_string: *const u8, len: usize) -> sgx_status_t;
+    fn bench_kv(eid: sgx_enclave_id_t, retval: *mut sgx_status_t,
+                     data_size: *const u8, len1: usize,
+                     bench_name: *const u8, len2: usize) -> sgx_status_t;
 }
 
 fn init_enclave() -> SgxResult<SgxEnclave> {
@@ -113,6 +115,11 @@ fn init_enclave() -> SgxResult<SgxEnclave> {
 }
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 3 {
+        println!("Please provide two arguments: data_size and bench_name!");
+        return;
+    }
 
     let enclave = match init_enclave() {
         Ok(r) => {
@@ -125,15 +132,18 @@ fn main() {
         },
     };
 
-    let input_string = String::from("This is a normal world string passed into Enclave!\n");
+    let data_size = args[1].clone();
+    let bench_name = args[2].clone();
 
     let mut retval = sgx_status_t::SGX_SUCCESS;
 
     let result = unsafe {
-        say_something(enclave.geteid(),
-                      &mut retval,
-                      input_string.as_ptr() as * const u8,
-                      input_string.len())
+        bench_kv(enclave.geteid(),
+                 &mut retval,
+                 data_size.as_ptr() as * const u8,
+                 data_size.len(),
+                 bench_name.as_ptr() as * const u8,
+                 bench_name.len())
     };
 
     match result {
@@ -144,7 +154,7 @@ fn main() {
         }
     }
 
-    println!("[+] say_something success...");
+    println!("[+] success...");
 
     enclave.destroy();
 }

@@ -28,7 +28,6 @@
 
 #![crate_name = "helloworldsampleenclave"]
 #![crate_type = "staticlib"]
-
 #![cfg_attr(not(target_env = "sgx"), no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
@@ -38,12 +37,14 @@ extern crate sgx_types;
 extern crate sgx_tstd as std;
 extern crate sgx_tunittest;
 
-use sgx_types::*;
-use std::string::String;
-use std::vec::Vec;
-use std::io::{self, Write, ErrorKind};
-use std::slice;
 use sgx_tunittest::*;
+use sgx_types::*;
+use std::io::{self, ErrorKind};
+use std::slice;
+use std::string::String;
+
+use std::time::*;
+use std::untrusted::time::InstantEx;
 
 extern crate rand;
 extern crate rusty_leveldb;
@@ -54,13 +55,15 @@ use std::iter;
 use rusty_leveldb::CompressionType;
 use rusty_leveldb::Options;
 use rusty_leveldb::DB;
+use rusty_leveldb::types::current_key_val;
+use rusty_leveldb::LdbIterator;
 
-use std::untrusted::fs;
-use std::error::Error;
 use std::boxed::Box;
+use std::error::Error;
+use std::untrusted::fs;
 
-const KEY_LEN: usize = 16;
-const VAL_LEN: usize = 48;
+const KEY_LEN: usize = 64;
+const VAL_LEN: usize = 300;
 
 fn gen_string(len: usize) -> String {
     let mut rng = rand::thread_rng();
@@ -70,6 +73,11 @@ fn gen_string(len: usize) -> String {
         .collect()
 }
 
+fn int_to_string(i: usize) -> String {
+    format!("{:064}", i)
+}
+
+#[warn(dead_code)]
 fn fill_db(db: &mut DB, entries: usize) -> Result<(), Box<dyn Error>> {
     for i in 0..entries {
         let (k, v) = (gen_string(KEY_LEN), gen_string(VAL_LEN));
@@ -93,7 +101,7 @@ fn fill_db(db: &mut DB, entries: usize) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn bench() {
+fn bench_write(num_mb: usize, is_seq: bool) -> Result<(), Box<dyn Error>> {
     let key = [
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
         0x08,
@@ -101,53 +109,162 @@ fn bench() {
     let mut opt = Options::new_disk_db_with(key);
     opt.compression_type = CompressionType::CompressionSnappy;
 
-    println!("{}", "before db open");
-    let mut db = DB::open("/tmp/leveldb_testdb", opt).unwrap();
+    let a = Instant::now();
 
-    println!("{}", "db open is done");
-    fill_db(&mut db, 100).unwrap();
+    let mut db = DB::open("/tmp/leveldb_testdb", opt)?;
+    let entries = 2748 * num_mb;
 
+    for i in 0..entries {
+        let (k, v) = if is_seq {
+            (gen_string(KEY_LEN), gen_string(VAL_LEN))
+        } else {
+            (int_to_string(i), gen_string(VAL_LEN))
+        };
+        db.put(k.as_bytes(), v.as_bytes())?;
+        if i % 100 == 0 || i == entries - 1 {
+            db.flush()?;
+        }
+    }
     drop(db);
 
-    println!("{}", "before db remove");
+    let b = Instant::now();
+    let dur = b.duration_since(a);
+    println!("dur={:?}", dur);
     fs::remove_dir_all("/tmp/leveldb_testdb").expect("Cannot remove directory");
-    println!("{}", "db remove is done");
+    Ok(())
 }
 
-#[no_mangle]
-pub extern "C" fn say_something(some_string: *const u8, some_len: usize) -> sgx_status_t {
+fn bench_rand_read_or_delete(
+    num_mb: usize, 
+    is_del: bool
+) -> Result<(), Box<dyn Error>> {
+    let key = [
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+        0x08,
+    ];
+    let mut opt = Options::new_disk_db_with(key);
+    opt.compression_type = CompressionType::CompressionSnappy;
 
-    let str_slice = unsafe { slice::from_raw_parts(some_string, some_len) };
-    let _ = io::stdout().write(str_slice);
+    let mut db = DB::open("/tmp/leveldb_testdb", opt)?;
+    let entries = 2748 * num_mb;
 
-    // A sample &'static string
-    let rust_raw_string = "This is a in-Enclave ";
-    // An array
-    let word:[u8;4] = [82, 117, 115, 116];
-    // An vector
-    let word_vec:Vec<u8> = vec![32, 115, 116, 114, 105, 110, 103, 33];
-
-    // Construct a string from &'static string
-    let mut hello_string = String::from(rust_raw_string);
-
-    // Iterate on word array
-    for c in word.iter() {
-        hello_string.push(*c as char);
+    for i in 0..entries {
+        let (k, v) = (int_to_string(i), gen_string(VAL_LEN));
+        db.put(k.as_bytes(), v.as_bytes())?;
+        if i % 100 == 0 || i == entries - 1 {
+            db.flush()?;
+        }
     }
 
-    // Rust style convertion
-    hello_string += String::from_utf8(word_vec).expect("Invalid UTF-8")
-                                               .as_str();
+    let a = Instant::now();
+    let run = 10000;
+    for i in 0..run {
+        let mut rng = rand::thread_rng();
+        let x: usize = rng.gen::<usize>() % entries;
+        let key = int_to_string(x);
+        if is_del {
+            db.delete(key.as_bytes())?;
+            if i % 100 == 0 || i == run-1 {
+                db.flush()?;
+            }
+        } else {
+            let _val = db
+                .get(key.as_bytes())
+                .ok_or_else(|| Box::new(io::Error::new(ErrorKind::NotFound, "Key not found")))?;
+        }
+    }
+    let b = Instant::now();
+    let dur = b.duration_since(a);
+    println!("dur={:?}", dur.as_millis());
 
-    // Ocall to normal world for output
-    println!("{}", &hello_string);
-
-    bench();
-
-    sgx_status_t::SGX_SUCCESS
+    drop(db);
+    fs::remove_dir_all("/tmp/leveldb_testdb").expect("Cannot remove directory");
+    Ok(())
 }
 
-fn unit_test() { 
+fn bench_scan(
+    num_mb: usize, 
+) -> Result<(), Box<dyn Error>> {
+    let key = [
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09,
+        0x08,
+    ];
+    let mut opt = Options::new_disk_db_with(key);
+    opt.compression_type = CompressionType::CompressionSnappy;
+
+    let mut db = DB::open("/tmp/leveldb_testdb", opt)?;
+    let entries = 2748 * num_mb;
+
+    for i in 0..entries {
+        let (k, v) = (int_to_string(i), gen_string(VAL_LEN));
+        db.put(k.as_bytes(), v.as_bytes())?;
+        if i % 100 == 0 || i == entries - 1 {
+            db.flush()?;
+        }
+    }
+
+    let a = Instant::now();
+    let mut iter = db.new_iter().unwrap();
+
+    let run = 500;
+    let scan_length = 1000;
+    for _i in 0..run {
+        let mut rng = rand::thread_rng();
+        let x: usize = rng.gen::<usize>() % (entries-scan_length);
+        let key = int_to_string(x);
+        iter.seek(key.as_bytes());
+        for _j in 0..scan_length {
+            assert!(iter.advance());
+            let (_k, _v) = current_key_val(&iter).unwrap();
+        }
+    }
+    let b = Instant::now();
+    let dur = b.duration_since(a);
+    println!("dur={:?}", dur.as_millis());
+
+    drop(db);
+    fs::remove_dir_all("/tmp/leveldb_testdb").expect("Cannot remove directory");
+    Ok(())
+}
+
+
+#[no_mangle]
+pub extern "C" fn bench_kv(
+    data_size: *const u8,
+    len1: usize,
+    bench_name: *const u8,
+    len2: usize,
+) -> sgx_status_t {
+    // get data size
+    let str_slice = unsafe { slice::from_raw_parts(data_size, len1) };
+    let new_string = String::from_utf8(str_slice.to_vec()).unwrap();
+    let size = new_string.parse::<usize>().unwrap();
+    // get bench name
+    let str_slice = unsafe { slice::from_raw_parts(bench_name, len2) };
+    let name = String::from_utf8(str_slice.to_vec()).unwrap();
+
+    // print the input argument
+    println!("size={}MB, name={}", size, name);
+    let res = match &name[..] {
+        "rand_write" => bench_write(size, false),
+        "seq_write" => bench_write(size, true),
+        "rand_read" => bench_rand_read_or_delete(size, false),
+        "rand_delete" => bench_rand_read_or_delete(size, true),
+        "scan" => bench_scan(size),
+        _ => Ok(()),
+    };
+
+    match res {
+        Err(e) => {
+            println!("Error:{:?}", e);
+            sgx_status_t::SGX_ERROR_UNEXPECTED
+        }
+        Ok(_) => sgx_status_t::SGX_SUCCESS,
+    }
+}
+
+/*
+fn unit_test() {
     rsgx_unit_tests!(
         rusty_leveldb::block::tests::run_tests,
         rusty_leveldb::block_builder::tests::run_tests,
@@ -177,3 +294,4 @@ fn unit_test() {
         rusty_leveldb::write_batch::tests::run_tests,
     );
 }
+*/

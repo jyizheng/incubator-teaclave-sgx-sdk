@@ -1,0 +1,70 @@
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=4MB, name=scan
+dur=2348
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=8MB, name=scan
+dur=2353
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=16MB, name=scan
+dur=3175
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=32MB, name=scan
+dur=4954
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=64MB, name=scan
+dur=5539
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=128MB, name=scan
+dur=5885
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=256MB, name=scan
+dur=6116
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=512MB, name=scan
+dur=6262
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=1024MB, name=scan
+dur=6882
+[+] success...
+[+] Home dir is /home/betrfs
+[+] Open token file success! 
+[+] Token file invalid, will create new token file
+[+] Init Enclave Successful 2!
+size=2048MB, name=scan
+dur=6929
+[+] success...
